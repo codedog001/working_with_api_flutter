@@ -13,7 +13,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String stringResponse = "null";
   List listResponse = ['null list'];
-  Map mapResponse = {'a': 1};
 
   Future fetchStringData() async {
     var response = await http.get(
@@ -33,17 +32,6 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       setState(() {
         listResponse = json.decode(response.body);
-      });
-    }
-  }
-
-  fetchMapData() async {
-    var response = await http.get(
-      Uri.parse('https://thegrowingdeveloper.org/apiview?id=2'),
-    );
-    if (response.statusCode == 200) {
-      setState(() {
-        mapResponse = json.decode(response.body);
       });
     }
   }
@@ -73,6 +61,9 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 20, color: Colors.blue),
               ),
             ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.2,
+            ),
             Center(
               child: Text(
                 listResponse.toString(),
@@ -88,6 +79,9 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 20, color: Colors.blue),
               ),
             ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+            ),
             RaisedButton(
               onPressed: () {
                 Navigator.of(context).push(
@@ -97,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               child: Text(
-                'Get Map Result',
+                'Load Map',
                 style: TextStyle(fontSize: 20, color: Colors.blue),
               ),
             ),
