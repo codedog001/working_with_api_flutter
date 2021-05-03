@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import 'map_result.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,8 +12,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String stringResponse = "null";
+  List listResponse = ['null list'];
+  Map mapResponse = {'a': 1};
 
-  Future fetchData() async {
+  Future fetchStringData() async {
     var response = await http.get(
       Uri.parse('https://thegrowingdeveloper.org/apiview?id=1'),
     );
@@ -20,31 +26,83 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future fetchListData() async {
+    var response = await http.get(
+      Uri.parse('https://thegrowingdeveloper.org/apiview?id=4'),
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        listResponse = json.decode(response.body);
+      });
+    }
+  }
+
+  fetchMapData() async {
+    var response = await http.get(
+      Uri.parse('https://thegrowingdeveloper.org/apiview?id=2'),
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        mapResponse = json.decode(response.body);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('API Working'),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Text(
-              stringResponse.toString(),
-              style: TextStyle(
-                fontSize: 30,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Center(
+              child: Text(
+                stringResponse.toString(),
+                style: TextStyle(
+                  fontSize: 30,
+                ),
               ),
             ),
-          ),
-          RaisedButton(
-            onPressed: fetchData,
-            child: Text(
-              'Get String Result',
-              style: TextStyle(fontSize: 20, color: Colors.blue),
+            RaisedButton(
+              onPressed: fetchStringData,
+              child: Text(
+                'Get String Result',
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
             ),
-          ),
-        ],
+            Center(
+              child: Text(
+                listResponse.toString(),
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+              ),
+            ),
+            RaisedButton(
+              onPressed: fetchListData,
+              child: Text(
+                'Get List Result',
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => MapResult(),
+                  ),
+                );
+              },
+              child: Text(
+                'Get Map Result',
+                style: TextStyle(fontSize: 20, color: Colors.blue),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
